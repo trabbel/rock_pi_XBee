@@ -17,6 +17,13 @@ length = writeFrame(tx_buf, 0xFFFE, 0x0013a20041f223b8, payload, len(payload))
 print(tx_buf[:length])
 print(length)
 
+def receive():
+     while True:
+         if xbee.in_waiting >0:
+              rx_callback(rx_buf)
+
+
+
 def rx_callback(buffer):
     length = 0
     c = b''
@@ -30,8 +37,8 @@ def rx_callback(buffer):
 
     # Parse the frame. In case of an error, a negative length
     # is returned
-    result = readFrame(buffer, xbee)
-    length = result.length
+    result = readFrame(xbee, buffer)
+    length = result[1]#.length
 
     print(f"Payload Size: {length}")
 
@@ -42,10 +49,11 @@ def rx_callback(buffer):
         print(f"{buffer[i]:02x}", end='')
     print()
 
-    if result.frameID == 0x90:
+    if result[0] == 0x90:
         print(f"{buffer[12:length].decode('utf-8')}")
 
-thread = threading.Thread(target=rx_callback)
+
+thread = threading.Thread(target=receive)
 thread.start()
 
 while True:

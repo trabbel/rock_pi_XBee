@@ -89,7 +89,6 @@ def readFrame(serial_port: serial.Serial, frame: bytearray) -> Tuple[int, int]:
     # The length defined by the length bytes is not equal to the actual amount
     # of bytes, escape characters are not counted
     payload_size = (length_bytes[0] << 8) + length_bytes[1]
-    print(f"S:{payload_size}")
 
     # Read the payload. Return an error if no data is available or
     # another frame delimiter is encountered
